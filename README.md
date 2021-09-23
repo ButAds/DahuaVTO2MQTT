@@ -1,3 +1,5 @@
+[![Create and publish a Docker image](https://github.com/ButAds/DahuaVTO2MQTT/actions/workflows/deploy-image.yml/badge.svg)](https://github.com/ButAds/DahuaVTO2MQTT/actions/workflows/deploy-image.yml)
+
 # DahuaVTO2MQTT
 Listens to events from Dahua VTO, Camera, NVR unit and publishes them via MQTT Message
 
