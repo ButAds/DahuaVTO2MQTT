@@ -1,22 +1,24 @@
 # DahuaVTO2MQTT
-Listens to events from Dahua VTO, Camera, NVR unit and publishes them via MQTT Message
+Listens to events from Dahua VTO, Camera, NVR unit and publishes them via MQTT Message.  
+Based on an ARM64 image.
 
 [Dahua VTO MQTT Events - examples](https://github.com/elad-bar/DahuaVTO2MQTT/blob/master/MQTTEvents.MD)
 
 [Tested Models](https://github.com/elad-bar/DahuaVTO2MQTT/blob/master/SupportedModels.md) - Should work with all Dahua devices
 
 ## Environment Variables
-```
-DAHUA_VTO_HOST: 			Dahua VTO hostname or IP
-DAHUA_VTO_USERNAME: 		Dahua VTO username to access (should be admin)
-DAHUA_VTO_PASSWORD: 		Dahua VTO administrator password (same as accessing web management)
-MQTT_BROKER_HOST: 			MQTT Broker hostname or IP
-MQTT_BROKER_PORT: 			MQTT Broker port, default=1883
-MQTT_BROKER_USERNAME: 		MQTT Broker username
-MQTT_BROKER_PASSWORD: 		MQTT Broker password
-MQTT_BROKER_TOPIC_PREFIX: 	MQTT Broker topic prefix, default=DahuaVTO
-DEBUG:                      Minimum log level (Debug / Info), default=False
-```
+
+| Variable                  | Description                                                         |
+|---------------------------| ------------------------------------------------------------------- |
+| DAHUA_VTO_HOST            | Dahua VTO hostname or IP                                            |
+| DAHUA_VTO_USERNAME        | Dahua VTO username to access (should be admin)                      |
+| DAHUA_VTO_PASSWORD        | Dahua VTO administrator password (same as accessing web management) |
+| MQTT_BROKER_HOST          | MQTT Broker hostname or IP                                          |
+| MQTT_BROKER_PORT          | MQTT Broker port, default=1883                                      |
+| MQTT_BROKER_USERNAME      | MQTT Broker username                                                |
+| MQTT_BROKER_PASSWORD:     | MQTT Broker password                                                |
+| MQTT_BROKER_TOPIC_PREFIX: | MQTT Broker topic prefix, default=DahuaVTO                          |
+| DEBUG:                    | Minimum log level (Debug / Info), default=False                     |
 
 ## Run manually
 Requirements:
@@ -27,11 +29,11 @@ python3 DahuaVTO.py
 ```
 
 ## Docker Compose
-```
+```yaml
 version: '2'
 services:
   dahuavto2mqtt:
-    image: "eladbar/dahuavto2mqtt:latest"
+    image: "ghcr.io/butads/dahuavto2mqtt:lates"
     container_name: "dahuavto2mqtt"
     hostname: "dahuavto2mqtt"
     restart: always
@@ -46,6 +48,50 @@ services:
       - MQTT_BROKER_TOPIC_PREFIX=DahuaVTO
       - DEBUG=False
 ```
+## Kubectl creation
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dahuavto2mqtt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: dahuavto2mqtt
+  template:
+    metadata:
+      labels:
+        name: dahuavto2mqtt
+    spec:
+      containers:
+        - name: dahuavto2mqtt
+          image: ghcr.io/butads/dahuavto2mqtt:latest
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: DAHUA_VTO_HOST
+              value: vto-host
+            - name: DAHUA_VTO_USERNAME
+              value: username
+            - name: DAHUA_VTO_PASSWORD
+              value: password
+            - name: MQTT_BROKER_HOST
+              value: mqtt-host
+            - name: MQTT_BROKER_PORT
+              value: "1392"
+            - name: MQTT_BROKER_USERNAME
+              value: username
+            - name: MQTT_BROKER_PASSWORD
+              value: password
+            - name: MQTT_BROKER_TOPIC_PREFIX
+              value: DahuaVTO
+            - name: DEBUG
+              value: "False"
+      hostname: dahuavto2mqtt
+      restartPolicy: Always
+
+```
+
 
 ## Commands
 
